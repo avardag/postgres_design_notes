@@ -101,7 +101,49 @@ The COALESCE function evaluates arguments from left to right until it finds the 
 
 
 
+--########################
+--Tag/mention system design
+/*
 
+ 1-One single tags table
+  
+ 		tags
+ 		table
+|id		|user_id	|post_id	|x		|y		|
+-------------------------------------------------
+|1		|12			|456		|352	|224	|
+|2		|12			|389		|NULL	|NULL	|
+|3		|78			|589		|690	|234	|
+|4		|29			|493		|NULL	|NULL	|
+|5		|90			|863		|NULL	|NULL	|
+
+NULL values in x, y means its a tag in a caption of  a post.
+nonNull values in x, y means mention on a pic, location of popup on an image.
+
+2-Two separate tables for tags in caption and tag in a photo
+
+ 		photo_tags
+ 		   table
+|id		|user_id	|post_id	|x		|y		|
+-------------------------------------------------
+|1		|12			|456		|352	|224	|
+|2		|12			|389		|389	|120	|
+|3		|78			|589		|690	|234	|
+
+
+ 	caption_tag										
+ 	   table										
+|id		|user_id	|post_id	|
+|int	|int		|int		|
+---------------------------------	
+|12		|12			|243		|
+|13		|45			|89			|
+
+if meaning and queries in photo_tag may change in future, 
+and if i expect to query for caption_tags & photo_tags at different rates, and indexing the more frequent, 
+and easier optimization
+better solution 2.
+ */
 
 
 
@@ -119,7 +161,10 @@ Table posts {
   created_at timestamp
   updated_at timestamp
   url varchar(200)
-  user_id integer [ref:> users.id] 
+  user_id integer [ref:> users.id]
+  caption varchar(255)
+  lat real
+  lng real 
 }
 
 Table comments {
@@ -138,6 +183,23 @@ Table likes {
   user_id integer [ref: > users.id]
   post_id integer [ref: > posts.id]
   comment_id integer [ref:> comments.id]
+}
+
+Table photo_tags{
+  id serial [pk, increment]
+  user_id integer [ref: > users.id]
+  post_id integer [ref: > posts.id]
+  x integer
+  y integer
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table caption_tags{
+  id serial [pk, increment]
+  user_id integer [ref: > users.id]
+  post_id integer [ref: > posts.id]
+  created_at timestamp
 }
 
 
