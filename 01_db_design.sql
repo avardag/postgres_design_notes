@@ -145,7 +145,47 @@ and easier optimization
 better solution 2.
  */
 
+--#####################3
+--Hashtags
+/*
+ --1st solution: One hashtags table 
+  	hashtags										
+ 	   table										
+|id		|title		|post_id	|
+|int	|varchar	|int		|
+---------------------------------	
+|12		|happy			|32		|
+|13		|love			|19		|
+|14		|birthday		|456	|
+|15		|love			|190	|
+|16		|love			|89		|
+ 
+works, but not very efficient, not performant
+--2nd solution: one table for hashtags dictionary, another as a join betwen posts and hashtags dictionary
+better normalized, optimized, no string duplication
+  	hashtags										
+ 	   table										
+|id		|title		|
+|int	|varchar	|
+-------------------------	
+|34		|birthday	|
+|35		|newyork	|
+|36		|rain		|
+|37		|funny		|
+|38		|birhtday	|
 
+  	hashtags_posts										
+ 	   table										
+|id		|hashtag_id	|post_id	|
+|int	|int		|int		|
+---------------------------------	
+|12		|34		|32			|
+|13		|56		|19			|
+|13		|38		|456		|
+|13		|34		|190		|
+|13		|34		|89			|
+
+*/
 
 /*
  * https://dbdiagram.io/d 
@@ -154,6 +194,12 @@ better solution 2.
   created_at timestamp
   updated_at timestamp
   username varchar(32)
+  bio varchar(400)
+  avatar varchar(200)
+  password varchar(50)
+  phone varchar(25)
+  email varchar(64)
+  status varchar(15)
 }
 
 Table posts {
@@ -202,8 +248,18 @@ Table caption_tags{
   created_at timestamp
 }
 
+Table hashtags {
+ id serial [pk, increment]
+ title varchar(32)
+ created_at timestamp
+}
 
- * */
+Table hashtags_posts{
+  id serial [pk, increment]
+  hashtag_id integer [ref: > hashtags.id]
+  post_id integer [ref: > posts.id]
+}
+ */
 
 
 
