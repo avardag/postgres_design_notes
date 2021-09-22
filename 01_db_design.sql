@@ -187,6 +187,36 @@ better normalized, optimized, no string duplication
 
 */
 
+--#####################################
+--Num of Followers and number of posts
+/*
+ this can be calculated by running a query on data that already xists in DB
+ this is a derived data
+ and storing derived data is bad design
+ */
+
+--###########################33
+--Followers TABLE 
+
+
+/*
+   	followers										
+ 	   table										
+|id		|leader_id	|follower_id|
+|int	|int		|int		|
+---------------------------------	
+|12		|34			|32			|
+|13		|56			|19			|
+|13		|38			|456		|
+|13		|34			|190		|
+|13		|34			|89			|
+
+where leader_id and follower_id are both user_id FK,
+need add CHECH(leader_id != follower_id) so that one cant follow himself
+and UNIQUE(leader_id, follower_id)
+
+ * */
+
 /*
  * https://dbdiagram.io/d 
  Table users {
@@ -258,6 +288,13 @@ Table hashtags_posts{
   id serial [pk, increment]
   hashtag_id integer [ref: > hashtags.id]
   post_id integer [ref: > posts.id]
+}
+
+Table followers{
+  id serial [pk, increment]
+  user_id integer [ref: > users.id]
+  follower_id integer [ref: > users.id]
+  created_at timestamp
 }
  */
 
